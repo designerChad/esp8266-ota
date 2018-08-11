@@ -50,7 +50,7 @@ int nptAttempts = 0;
 
 // #### LED SETUP #########################
 #define interval 5000
-
+#define FASTLED_INTERNAL
 #include "FastLED.h"
 #define NUM_LEDS 22 //155
 
@@ -242,6 +242,12 @@ WiFiClient client = server.available();   // Listen for incoming clients
               client.println("<p>Second :: "); 
                 client.println( second() ); 
               client.println("</p>");
+              client.println("<p>Time Serial :: "); 
+                client.println( ( (hour() * 10) + minute() ) ); 
+              client.println("</p>");
+              client.println("<p>TimeSerial Fn :: "); 
+                client.println( getTimeSerial ()); 
+              client.println("</p>");
 
             client.println("</body></html>");
             
@@ -348,20 +354,20 @@ WiFiClient client = server.available();   // Listen for incoming clients
   // }
 
   if( minute() % 2 == 0){ // flip flop every other minute
-    fill_solid( leds6, NUM_LEDS, CHSV(HUE_BLUE,255,255));
+    fill_solid( leds6, NUM_LEDS, CHSV(HUE_BLUE,255,100));
   }else{
     //fill_solid( leds6, NUM_LEDS, CHSV(HUE_BLUE,255,255));
     rainbow();
   }
   
-  if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { // Run between 6pm and 11pm
+  //if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { 
+  //if ( ( getTimeSerial() > 830 ) && ( getTimeSerial() < 840 ) ) { // Run between 6pm (1800 ) and 11pm ( 2300 )
+  if ( ( hour() % 2 == 0 ) ) { // Run on even hours only   
       FastLED.show();
-  } else if ( ( hour() == 22 ) && ( minute() < 10 ) ) { // Go until 10min past 10pm
-    FastLED.show();
   } else {
       FastLED.clear();
   }
-
+  //Serial.println ( getTimeSerial () );
 } // loop
 
 // ############## FUNCTIONS ################
@@ -405,7 +411,13 @@ void addGlitter( fract8 chanceOfGlitter)
   }
 }
 
-
+// ##### MY TIME FUNCTIONS ##################################
+int getTimeSerial () {
+  int theHour = hour();
+  int theMinute = minute();
+  int myTime = ( (theHour * 100) + theMinute );
+  return myTime;
+}
 
 // ##### HORACK TIME FUNCTIONS ##################################
 // NPT time server stuff ********************************************************************************
