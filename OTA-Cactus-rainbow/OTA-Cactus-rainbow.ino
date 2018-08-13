@@ -14,7 +14,8 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-#include "/Users/chad/documents/arduino/includes/netconn"
+//#include "/Users/chad/documents/arduino/includes/netconn"
+#include "/Users/chadwickanderson/documents/arduino/includes/netconn"
 
 // ###### OTA #################################
 // Replace with your network credentials
@@ -125,7 +126,7 @@ void setup() {
   FastLED.addLeds<WS2812B,6,GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip); // BODY
   FastLED.addLeds<WS2812B,7,GRB>(longarmleds, LONGNUM_LEDS).setCorrection(TypicalLEDStrip); // LONG ARM
   currentBlending = NOBLEND;
-  FastLED.clear();
+  
 
   // #### WEBSERVER STARTUP
   server.begin();
@@ -264,7 +265,7 @@ void loop() {
       //  TIMER
       //#####################
       //if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { 
-      if ( ( getTimeSerial() > 1800 ) && ( getTimeSerial() < 2210 ) ) { // Run between 6pm (1800 ) and 10pm ( 2200 )
+      if ( ( getTimeSerial() > 1915 ) && ( getTimeSerial() < 1920 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
       //if ( ( hour() % 2 == 0 ) ) { // Run on even hours only   
           FastLED.show();
       } else {
