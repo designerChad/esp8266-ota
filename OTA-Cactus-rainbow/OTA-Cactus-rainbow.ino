@@ -1,8 +1,10 @@
-/*********
-  Rui Santos
-  Complete project details at http://randomnerdtutorials.com
-  Arduino IDE example: Examples > Arduino OTA > BasicOTA.ino
-*********/
+/***************************************
+  Chad Anderson
+  Cactus 1.0
+  Based on Arduino OTA; HORAK NTP TIMER
+  Last Upload: 8/12/18 : 20:24
+****************************************/
+
 // Both of these are included when you pick the Time library in Arduino IDE library manager
 //https://github.com/michaelmargolis/arduino_time/tree/master/Time
 
@@ -265,10 +267,15 @@ void loop() {
       //  TIMER
       //#####################
       //if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { 
-      if ( ( getTimeSerial() > 1915 ) && ( getTimeSerial() < 1920 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
-      //if ( ( hour() % 2 == 0 ) ) { // Run on even hours only   
+      if ( ( getTimeSerial() > 1800 ) && ( getTimeSerial() < 2200 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
+      //if ( ( hour() % 2 == 0 ) ) { // Run on even hours only 
+
           FastLED.show();
       } else {
+          fill_solid( leds, NUM_LEDS, CHSV(0,0,0));
+          fill_solid( longarmleds, NUM_LEDS, CHSV(0,0,0));
+          fill_solid( shortarmleds, NUM_LEDS, CHSV(0,0,0));
+          FastLED.show();
           FastLED.clear();
       }
 
