@@ -99,7 +99,7 @@ void setup() {
    ArduinoOTA.setPort(8266);
 
   // Hostname defaults to esp8266-[ChipID]
-   ArduinoOTA.setHostname("ChadzPaintbrush");
+   ArduinoOTA.setHostname("ChadzPaintbrush2");
 
   // No authentication by default
    ArduinoOTA.setPassword((const char *)"123");
@@ -139,10 +139,10 @@ void setup() {
     //FastLED.addLeds<WS2811,4,RGB>(leds4, NUM_LEDS2).setCorrection(TypicalLEDStrip); //
     //FastLED.addLeds<WS2811,5,RGB>(leds5, NUM_LEDS3).setCorrection(TypicalLEDStrip); //
     FastLED.addLeds<WS2811,6,RGB>(leds6, NUM_LEDS_ALL).setCorrection(TypicalLEDStrip); //
-    //FastLED.addLeds<WS2811,7,RGB>(leds7, NUM_LEDS6).setCorrection(TypicalLEDStrip); //
+    FastLED.addLeds<WS2811,7,RGB>(leds7, NUM_LEDS_ALL).setCorrection(TypicalLEDStrip); //
 
     currentBlending = NOBLEND;
-    fill_solid( leds6, NUM_LEDS_ALL, CHSV(0,0,0));
+    fill_solid( leds7, NUM_LEDS_ALL, CHSV(0,0,0));
     //fill_solid( leds7, NUM_LEDS6, CHSV(HUE_GREEN,255,255));
 
    
@@ -336,7 +336,7 @@ void loop() {
 void rainbow() 
 {
   // FastLED's built-in rainbow generator
-  fill_rainbow( leds6, NUM_LEDS_ALL, gHue, 1);
+  fill_rainbow( leds7, NUM_LEDS_ALL, gHue, 1);
 }
 
 void rainbowWithGlitter() 
