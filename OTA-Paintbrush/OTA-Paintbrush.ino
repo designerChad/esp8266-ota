@@ -1,8 +1,8 @@
 /***************************************
   Chad Anderson
-  Paintbrush 1.0
+  Paintbrush 1.1
   Based on Arduino OTA; HORAK NTP TIMER
-  Last Upload: 9/8/18 : 9:00
+  Last Upload: 9/8/18 : 12:00
 ****************************************/
 
 // Both of these are included when you pick the Time library in Arduino IDE library manager
