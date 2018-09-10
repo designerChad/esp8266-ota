@@ -1,8 +1,8 @@
 /***************************************
   Chad Anderson
-  Paintbrush 1.1
+  Paintbrush 1.2
   Based on Arduino OTA; HORAK NTP TIMER
-  Last Upload: 9/8/18 : 12:00
+  Last Upload: 9/10/18 : 9:04
 ****************************************/
 
 // Both of these are included when you pick the Time library in Arduino IDE library manager
@@ -48,37 +48,48 @@ int nptAttempts = 0;
 // #### LED SETUP #########################
 #define interval 5000
 #define FASTLED_INTERNAL
+//#define FASTLED_ALLOW_INTERRUPTS 0
+//#define FASTLED_INTERRUPT_RETRY_COUNT 0
+//#define FASTLED_ESP8266_RAW_PIN_ORDER
+#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+//#define FASTLED_ESP8266_D1_PIN_ORDER
 
 #include "FastLED.h"
 #include "Adafruit_NeoPixel.h"
 
-#define NUM_LEDS1 1 //155
-#define NUM_LEDS2 1 //7-6
-#define NUM_LEDS3 7 //19-12 = 5
-#define NUM_LEDS4 19 //37-18 = 19
-#define NUM_LEDS5 37 //61-24 = 
-#define NUM_LEDS6 61 //155
+#define NUM_LEDS1 1   //  7-6 = 1  Ring 1
+#define NUM_LEDS2 7   //19-12 = 5  Ring 2
+#define NUM_LEDS3 19  //37-18 = 19 Ring 3
+#define NUM_LEDS4 37  //61-24 = 37 Ring 4
+#define NUM_LEDS5 61  //155        Ring 5
+
 #define NUM_LEDS_ALL 61 //155
 
-#define PIN 7
+#define PIN D7
 #define NUMLEDS_1 = 1
+
+uint8_t LED_Pin = D7;       // declare LED pin on NodeMCU Dev Kit
+
 //Adafruit_NeoPixel pixels = Adafruit_NeoPixel(16, PIN);
 //Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMLEDS_1, PIN, RGB);     //AdaFruit Neo Library
 
-struct CRGB leds3[NUM_LEDS1];
-struct CRGB leds4[NUM_LEDS2];
-struct CRGB leds5[NUM_LEDS3];
-struct CRGB leds6[NUM_LEDS4];
-struct CRGB leds7[NUM_LEDS6];
+struct CRGB ring1[NUM_LEDS1];
+struct CRGB ring2[NUM_LEDS2];
+struct CRGB ring3[NUM_LEDS3];
+struct CRGB ring4[NUM_LEDS4];
+struct CRGB ring5[NUM_LEDS5];
+struct CRGB ring6[NUM_LEDS_ALL];
 
 uint8_t gBrightness = 180;
 #define UPDATES_PER_SECOND 100
 #define FRAMES_PER_SECOND  120
 
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
+uint8_t myHue = 0;
 TBlendType    currentBlending;
 CRGBPalette16 gPal;
 bool gReverseDirection = false;
+uint8_t myCnt = 1; //counter for ring droplet();
 
 // 01 - SETUP ########################################
 
@@ -125,7 +136,8 @@ void setup() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-  pinMode(ESP_BUILTIN_LED, OUTPUT);
+  //pinMode(ESP_BUILTIN_LED, OUTPUT);
+  pinMode(LED_Pin, OUTPUT);   // Initialize the LED pin as an output
 
 // #####  / OTA ESSENTIALS ##########
 
@@ -138,12 +150,12 @@ void setup() {
     //FastLED.addLeds<WS2811,3,RGB>(leds3, NUM_LEDS1).setCorrection(TypicalLEDStrip); //
     //FastLED.addLeds<WS2811,4,RGB>(leds4, NUM_LEDS2).setCorrection(TypicalLEDStrip); //
     //FastLED.addLeds<WS2811,5,RGB>(leds5, NUM_LEDS3).setCorrection(TypicalLEDStrip); //
-    FastLED.addLeds<WS2811,6,RGB>(leds6, NUM_LEDS_ALL).setCorrection(TypicalLEDStrip); //
-    FastLED.addLeds<WS2811,7,RGB>(leds7, NUM_LEDS_ALL).setCorrection(TypicalLEDStrip); //
+    //FastLED.addLeds<WS2811,6,RGB>(leds6, NUM_LEDS_ALL).setCorrection(TypicalLEDStrip); //
+    FastLED.addLeds<WS2811,7,RGB>(ring6, NUM_LEDS_ALL).setCorrection(TypicalLEDStrip); //
 
     currentBlending = NOBLEND;
-    fill_solid( leds7, NUM_LEDS_ALL, CHSV(0,0,0));
-    //fill_solid( leds7, NUM_LEDS6, CHSV(HUE_GREEN,255,255));
+    fill_solid( ring6, NUM_LEDS_ALL, CHSV(0,0,0));
+    fill_solid( ring6, NUM_LEDS_ALL, CHSV(HUE_GREEN,255,255));
 
    
     // #### FIRE WITH PALETTE SETUP ITEMS ##################
@@ -241,6 +253,9 @@ void loop() {
                 client.println("<p>TimeSerial Fn :: "); 
                   client.println( getTimeSerial ()); 
                 client.println("</p>");
+                client.println("<p>MyCnt :: "); 
+                  client.println( myCnt ); 
+                client.println("</p>");
 
               client.println("</body></html>");
               
@@ -271,17 +286,12 @@ void loop() {
   //
   // #################################################
     // Add entropy to random number generator; we use a lot of it.
-    random16_add_entropy( rand());
-
+    //random16_add_entropy( rand());
+    myCnt+=1; // used for ring cycle counting // myCnt % 5
+    EVERY_N_MILLISECONDS( 300 ) { gHue--; } // slowly cycle the "base color" through the rainbow
       
-      EVERY_N_MILLISECONDS( 100 ) { gHue--; } // slowly cycle the "base color" through the rainbow
-      
-      // insert a delay to keep the framerate modest
-      //FastLED.delay(1000/FRAMES_PER_SECOND);
-
-      //addGlitter(100);
-      
-      //rainbowWithGlitter();
+    // insert a delay to keep the framerate modest
+    //FastLED.delay(1000/FRAMES_PER_SECOND);
 
 
       //#####################
@@ -289,23 +299,36 @@ void loop() {
       //#####################
       //if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { 
       
-      // if ( ( getTimeSerial() > 1800 ) && ( getTimeSerial() < 2200 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
+      // if ( ( getTimeSerial() > 1100 ) && ( getTimeSerial() < 2200 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
       
-      // //if ( ( hour() % 2 == 0 ) ) { // Run on even hours only 
-      
-      //   rainbow();
+      //   if ( (  minute() % 5 == 4 ) ) { // Run on even hours only 
+      //     rainbow();
+      //   }
+      //   if ( (  minute() % 5 == 3 ) ) { // Run on even hours only 
+      //     droplets(1, 20,250, 0); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
+      //   }
+      //   if ( (  minute() % 5 == 2 ) ) { // Run on even hours only 
+      //     colorWipe(38,30,1); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //   }
+      //   if ( (  minute() % 5 == 1 ) ) { // Run on even hours only 
+      //     droplets(0, 20,50, 1); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
+      //   }
+      //   if ( (  minute() % 5 == 0 ) ) { // Run on even hours only 
+      //     colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //   }
+
       //   FastLED.show();
-      // } else {
-      //     //fill_solid( leds7, NUM_LEDS6, CHSV(0,0,0));
-      //     //fill_solid( longarmleds, NUM_LEDS, CHSV(0,0,0));
-      //     //fill_solid( shortarmleds, NUM_LEDS, CHSV(0,0,0));
+      //  } else {
       //     FastLED.show();
       //     FastLED.clear();
       // }
     
-    //fill_solid( leds7, NUM_LEDS6, CHSV(HUE_RED,255,255));
-    rainbow();
-    EVERY_N_MILLISECONDS( 350 ) { gHue--; }
+      // ### EFFECTS ####
+      //fill_solid( leds7, NUM_LEDS_ALL, CHSV(HUE_RED,255,255));
+      //rainbow();
+      //droplets(1, 20,250, 0); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
+      //colorWipe(38,30,1); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      colorflash( 0, 210, 1, 60, 50); //colorflash( mode <0,1,2>, color, colorIncrement, numFlashes <0-61>, speed);
 
       // ### FIRE WITH PALETTE
       // Fourth, the most sophisticated: this one sets up a new palette every
@@ -325,19 +348,161 @@ void loop() {
     FastLED.show();
 } // LOOP
 
-// #################################################
+// #####################################################################################
 //
 //  FUNCTIONS
 //
-// #################################################
+// #####################################################################################
 
 
-
+//********************************************************************************
+// RAINBOW // rainbow( )
+//********************************************************************************
+// rainbow color cycle
 void rainbow() 
 {
   // FastLED's built-in rainbow generator
-  fill_rainbow( leds7, NUM_LEDS_ALL, gHue, 1);
+  fill_rainbow( ring6, NUM_LEDS_ALL, gHue, 1);
 }
+
+
+//********************************************************************************
+// DROPLETS // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
+//********************************************************************************
+void droplets(int mode, int colorIncrement, int speed, int direction) 
+{
+  //Serial.println(myCnt);
+  //Serial.println(myCnt % 5);
+  // fill_solid( ring6, NUM_LEDS5, CHSV(HUE_YELLOW,255,255));
+  //switch (myCnt % 5)
+  // 1 % 5 = 1
+  // 2 % 5 = 2
+  // 3 % 5 = 3
+  // 4 % 5 = 4
+  // 5 % 5 = 0
+  if(mode == 0){ // clear for droplet rings
+    FastLED.clear(); 
+  }else{ // clear every 5 cycles to fill rings
+    if ( myCnt % 5 == 1 ){
+      FastLED.clear();
+    }
+  }
+
+  if (direction == 0){ //INWARD TO OUTWARD DIRECTION
+    if ( myCnt % 5 == 1){
+      for(int z = 0  ; z < 1  ; z++){
+          ring6[z] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 2){
+      for(int a = 1  ; a < 7  ; a++){
+          ring6[a] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 3){
+      for(int b = 7  ; b < 19  ; b++){
+          ring6[b] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 4){
+      for(int c = 19 ; c < 37 ; c++){
+          ring6[c] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 0){
+      for(int d = 37 ; d < 61 ; d++){
+          ring6[d] = CHSV (myHue, 255, 255);
+      }
+    }
+  }else{ // OTWARD TO INWARD DIRECTION
+    if ( myCnt % 5 == 0){
+      for(int z = 0  ; z < 1  ; z++){
+          ring6[z] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 4){
+      for(int a = 1  ; a < 7  ; a++){
+          ring6[a] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 3){
+      for(int b = 7  ; b < 19  ; b++){
+          ring6[b] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 2){
+      for(int c = 19 ; c < 37 ; c++){
+          ring6[c] = CHSV (myHue, 255, 255);
+      }
+    }
+    if ( myCnt % 5 == 1){
+      for(int d = 37 ; d < 61 ; d++){
+          ring6[d] = CHSV (myHue, 255, 255);
+      }
+    }
+  }
+
+  delay(speed);
+  if (myCnt % 5 == 0){ // increment color ever 5 cycles
+    myHue+=colorIncrement;
+  }
+}
+
+//********************************************************************************
+// COLORWIPE // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+//********************************************************************************
+void colorWipe(int colorIncrement, int speed, int direction){
+  for(int i=0; i<NUM_LEDS_ALL; i++){
+    if(direction == 0){
+      ring6[i] = CHSV(myHue, 255, 255);
+    }
+    else{
+      ring6[NUM_LEDS_ALL-1-i] = CHSV(myHue, 255, 255);
+    }
+    FastLED.show();
+    delay(speed);
+  }
+  myHue+=colorIncrement;
+  Serial.println(myHue);
+}
+
+//********************************************************************************
+// COLORFLASH // colorflash( mode, color, colorIncrement, numFlashes <0-61>, speed)
+//********************************************************************************
+void colorflash(int mode, int color, int colorIncrement, int numFlashes, int speed){
+  int flashes[numFlashes];
+  FastLED.clear(); 
+
+  //mode 0=, 1=randomflash, 2=full flash
+
+  if (colorIncrement > 0) {
+    myHue+=colorIncrement;
+  }else{
+    myHue=color;
+  }
+
+  //for(int i=0; i<cycles; i++){
+    for(int g=0; g<numFlashes; g++){
+      int idx = random(NUM_LEDS_ALL);
+      if (numFlashes == NUM_LEDS_ALL){
+        flashes[g] = idx;
+        ring6[g] = CHSV(myHue,255,255);
+      }else{
+        flashes[g] = idx;
+        ring6[idx] = CHSV(myHue,255,255);
+      }
+    }
+    FastLED.show();
+    delay(speed);
+    for(int s=0; s<numFlashes; s++){
+      ring6[flashes[s]] = CHSV(0,0,0);
+    }
+    delay(speed);
+
+   
+  //}
+}
+
 
 void rainbowWithGlitter() 
 {
@@ -409,7 +574,7 @@ void Fire2012WithPalette()
       } else {
         pixelnumber = j;
       }
-      leds7[pixelnumber] = color;
+      ring6[pixelnumber] = color;
     }
 }
 
