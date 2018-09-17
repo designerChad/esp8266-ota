@@ -2,7 +2,7 @@
   Chad Anderson
   Cactus 1.0
   Based on Arduino OTA; HORAK NTP TIMER
-  Last Upload: 8/12/18 : 20:24
+  Last Upload: 9/15/18 : 15:47
 ****************************************/
 
 // Both of these are included when you pick the Time library in Arduino IDE library manager
@@ -16,8 +16,8 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-//#include "/Users/chad/documents/arduino/includes/netconn"
-#include "/Users/chadwickanderson/documents/arduino/includes/netconn"
+//#include "/Users/chad/documents/arduino/includes/netconn" //2011
+#include "/Users/chadwickanderson/documents/arduino/includes/netconn" //2017
 
 // ###### OTA #################################
 // Replace with your network credentials
@@ -267,7 +267,7 @@ void loop() {
       //  TIMER
       //#####################
       //if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { 
-      if ( ( getTimeSerial() > 1800 ) && ( getTimeSerial() < 2200 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
+      if ( ( getTimeSerial() > 1800 ) && ( getTimeSerial() < 2359 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
       //if ( ( hour() % 2 == 0 ) ) { // Run on even hours only 
 
           FastLED.show();
