@@ -76,18 +76,6 @@ uint8_t gBrightness = 180;
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 TBlendType    currentBlending;
 
-// ### Lightning constants
-  #define FREQUENCY     30                // controls the interval between strikes
-  #define FLASHES       15                 // the upper limit of flashes per strike
-  #define BRIGHTNESS    255
-  //CRGB leds[NUM_LEDS];
-  #define color White;
-  unsigned int dimmer = 1;
-  //uint8_t gBrightness = 180;
-  //#define UPDATES_PER_SECOND 50
-// ### END Lightning constants
-
-CRGBPalette16 currentPalette;
 
 // CANDYCORN GRADIENT
 // DEFINE_GRADIENT_PALETTE( candycorn_gp ) {
@@ -95,7 +83,8 @@ CRGBPalette16 currentPalette;
 // 80, 255, 0, 0,   // orange
 // 200, 255, 255, 255 //full white
 // }; 
-//CRGBPalette16 myPal = candycorn_gp;
+
+// CRGBPalette16 myPal = candycorn_gp;
 
 // 01 - SETUP ########################################
 
@@ -119,7 +108,7 @@ WiFi.setSleepMode(WIFI_NONE_SLEEP);
    ArduinoOTA.setPort(8266);
 
   // Hostname defaults to esp8266-[ChipID]
-   ArduinoOTA.setHostname("ChadzCactus");
+   ArduinoOTA.setHostname("ChadzShard");
 
   // No authentication by default
    ArduinoOTA.setPassword((const char *)"123");
@@ -157,26 +146,6 @@ WiFi.setSleepMode(WIFI_NONE_SLEEP);
   FastLED.addLeds<WS2812B,7,GRB>(longarmleds, LONGNUM_LEDS).setCorrection(TypicalLEDStrip); // LONG ARM
   currentBlending = NOBLEND;
   
-  delay(3000); // allows reprogramming if accidently blowing power w/leds
-    //LEDS.setBrightness(BRIGHTNESS);
-    //leds.setBrightness(BRIGHTNESS);
-    //shortarmleds.setBrightness(BRIGHTNESS);
-    //longarmleds.setBrightness(BRIGHTNESS);
-
-    // COLOR PALETTE SETUP
-      // This example shows stripes with NO gaps between them; the colors
-      // cross-fade at the boundaries.  An additional setup alternative is
-      // provided that puts a 'black' gap between the colors, so they don't
-      // bleed into each other if you prefer that.
-      
-      // Color stripes with NO gaps between them -- colors will crossfade
-      setupStripedPalette( CHSV(HUE_RED,255,255), CHSV(HUE_RED,255,255), CHSV(0,0,255), CHSV(0,0,255) );
-
-      // Color stripes WITH gaps of space (black) between them
-      //setupStripedPalette( CRGB::Red, CRGB::Black, CRGB::Green, CRGB::Black);
-
-
-
 
   // #### WEBSERVER STARTUP
   server.begin();
@@ -295,26 +264,14 @@ void loop() {
       //  TIMER
       //#####################
       //if ( ( hour() > 16 ) && ( hour() <= 22 ) ) { 
-      if ( ( getTimeSerial() > 1700 ) && ( getTimeSerial() < 2130 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
+      if ( ( getTimeSerial() > 500 ) && ( getTimeSerial() < 2230 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
       //if ( ( hour() % 2 == 0 ) ) { // Run on even hours only 
           
-          //theaterChase(35, 60, 155, 150);
-          paletteStripes();
-          //rainbowFill();        
+          //rainbowFill();          
           //addGlitter(100);
-        // if ( minute() > 10 && minute() < 20 ){
-        //   candyCorn();
-        // }else if ( minute() > 20 && minute() < 30 ){
-        //   lightning();
-        // }else if ( minute() > 30 && minute() < 40 ){
-        //   candyCorn();
-        // }else if ( minute() > 40 && minute() < 50 ){
-        //   lightning();
-        // }else{
-        //  candyCorn(); 
-        // }
-        
-        
+          //candyCorn();
+          rainbow();
+
           FastLED.show();
       } else {
           fill_solid( leds, NUM_LEDS, CHSV(0,0,0));
@@ -332,104 +289,6 @@ void loop() {
 //
 // #################################################
 //uint8_t heatindex = (25); //something from 0-255
-
-/////////////////////////////////////////////
-// PALETTE STRIPES
-// 12/10/2018
-// alternating color stripes based on defined palette
-/////////////////////////////////////////////
-// 
-// 
-// 
-void paletteStripes(){
-  static uint8_t startIndex = 0;
-  startIndex = startIndex + 3; /* higher = faster motion */
-  fill_palette( leds, NUM_LEDS, 
-                startIndex, 3, /* higher = narrower stripes */ 
-                currentPalette, 255, NOBLEND);
-  fill_palette( longarmleds, NUM_LEDS, 
-                startIndex, 5, /* higher = narrower stripes */ 
-                currentPalette, 255, NOBLEND);
-  fill_palette( shortarmleds, NUM_LEDS, 
-                startIndex, 5, /* higher = narrower stripes */ 
-                currentPalette, 255, NOBLEND);
-}
-
-
-/////////////////////////////////////////////
-// ALTERNATING STRIPES
-// 12/10/2018
-// alternating color stripes
-/////////////////////////////////////////////
-// 
-// 
-// 
-void stripes(CRGB c1, CRGB c2, int width){
-  for(int i=0; i<NUM_LEDS; i++){
-    if(i % (width * 2) < width){
-      leds[i] = c1;
-    }
-    else{
-      leds[i] = c2;
-    } 
-  }
-  FastLED.show();
-}
-
-//********************************************************************************
-// THEATERCHASE // theaterChase( )
-//********************************************************************************
-void theaterChase(byte red, byte green, byte blue, int SpeedDelay) {
-  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
-    for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        setPixel(i+q, red, green, blue);    //turn every third pixel on
-      }
-      FastLED.show();
-      delay(SpeedDelay);
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        setPixel(i+q, 0,0,0);        //turn every third pixel off
-      }
-    }
-  }
-}
-
-/////////////////////////////////////////////
-// LIGHTNING
-// 10/6/2018
-// Flashing lightning
-/////////////////////////////////////////////
-// The first "flash" in a bolt of lightning is the "leader." The leader
-// is usually duller and has a longer delay until the next flash. Subsequent
-// flashes, the "strokes," are brighter and happen at shorter intervals.
-
-void lightning(){
-  for (int flashCounter = 0; flashCounter < random8(3,FLASHES); flashCounter++)
-    {
-      if(flashCounter == 0) dimmer = 5;     // the brightness of the leader is scaled down by a factor of 5
-      else dimmer = random8(1,3);           // return strokes are brighter than the leader
-      fill_solid( leds, NUM_LEDS, CHSV(255, 0, 255/dimmer));
-      fill_solid( longarmleds, NUM_LEDS, CHSV(255, 0, 255/dimmer));
-      fill_solid( shortarmleds, NUM_LEDS, CHSV(255, 0, 255/dimmer));
-      // fill_solid(leds4,NUM_LEDS,CHSV(255, 0, 255/dimmer));
-      // fill_solid(leds6,NUM_LEDS,CHSV(255, 0, 255/dimmer));
-
-      FastLED.show();
-      delay(random8(4,10));                 // each flash only lasts 4-10 milliseconds
-      fill_solid( leds, NUM_LEDS, CHSV(0, 0, 0));
-      fill_solid( longarmleds, NUM_LEDS, CHSV(0, 0, 0));
-      fill_solid( shortarmleds, NUM_LEDS, CHSV(0, 0, 0));
-      // fill_solid(leds4,NUM_LEDS,CHSV(0, 0, 0));
-      // fill_solid(leds6,NUM_LEDS,CHSV(0, 0, 0));
-      FastLED.show();
-      
-      if (flashCounter == 0) delay (150);   // longer delay until next flash after the leader
-      delay(50+random8(100));               // shorter delay between strokes  
-    }
-    delay(random8(FREQUENCY)*100);          // delay between strikes
-}
-
-
 void candyCorn(){
   // YELLOW -> ORANGE -> WHITE
   //leds[i] = ColorFromPalette( myPal, heatindex); // normal palette access
@@ -447,34 +306,10 @@ void candyCorn(){
       fill_solid( leds, 30, CHSV(50,255,255) );//CHSV(HUE_YELLOW,255,255)
 
     // SETUP LONG ARM COLORS - PIN 7 :: ttl 98 (arm is 20)
-      fill_solid( longarmleds, LONGNUM_LEDS, CHSV(HUE_ORANGE,255,255)); // CHSV(HUE_YELLOW,255,255) HSV(0,0,255) //WHITECRGB(255,255,255))
+      fill_solid( longarmleds, LONGNUM_LEDS, CHSV(62,0,0)); // CHSV(HUE_YELLOW,255,255) HSV(0,0,255) //WHITECRGB(255,255,255))
       fill_solid( longarmleds, 80, CHSV(HUE_ORANGE,255,255));
       fill_solid( longarmleds, 66, CHSV(HUE_ORANGE,255,255));
       fill_solid( longarmleds, 35, CHSV(HUE_ORANGE,255,255));
-
-}
-
-void xmasTree(){
-  // YELLOW -> ORANGE -> WHITE
-  //leds[i] = ColorFromPalette( myPal, heatindex); // normal palette access
- // SETUP SHORT ARM COLORS - PIN 5 :: ttl 70 (arm is 20)
-      fill_solid( shortarmleds, SHORTNUM_LEDS, CHSV(HUE_GREEN,255,255));
-      fill_solid( shortarmleds, 66, CHSV(HUE_GREEN,255,255));
-      fill_solid( shortarmleds, 35, CHSV(HUE_GREEN,255,255));
-
-    // SETUP BODY COLORS - PIN 6
-      fill_solid( leds, NUM_LEDS, CHSV(0,0,255)); //HSV(0,0,255) //WHITE
-      fill_solid( leds, 135, CHSV(0,0,255)); //HSV(0,0,255) //WHITE
-      fill_solid( leds, 100, CHSV(HUE_GREEN,255,255));
-      fill_solid( leds, 78, CHSV(HUE_GREEN,255,255));      
-      fill_solid( leds, 45, CHSV(HUE_GREEN,255,255));
-      fill_solid( leds, 30, CHSV(50,255,255) );//CHSV(HUE_YELLOW,255,255)
-
-    // SETUP LONG ARM COLORS - PIN 7 :: ttl 98 (arm is 20)
-      fill_solid( longarmleds, LONGNUM_LEDS, CHSV(HUE_GREEN,255,255)); // CHSV(HUE_YELLOW,255,255) HSV(0,0,255) //WHITECRGB(255,255,255))
-      fill_solid( longarmleds, 80, CHSV(HUE_GREEN,255,255));
-      fill_solid( longarmleds, 66, CHSV(HUE_GREEN,255,255));
-      fill_solid( longarmleds, 35, CHSV(HUE_GREEN,255,255));
 
 }
 
@@ -524,36 +359,6 @@ void rainbowWithGlitter()
     }
     
   }
-
-//********************************************************************************
-// setPixel
-//********************************************************************************
-void setPixel(int Pixel, byte red, byte green, byte blue) {
-  leds[Pixel].r = red;
-  leds[Pixel].g = green;
-  leds[Pixel].b = blue;
-}
-
-//********************************************************************************
-// COLOR PALETTES
-//********************************************************************************
-// SEE SETUP CODE FOR COLOR DEFINITIONS
-void setupStripedPalette( CRGB A, CRGB AB, CRGB B, CRGB BA)
-{
-  // Sets up a palette with alternating stripes of
-  // colors "A" and "B" -- with color "AB" between 
-  // where A fades into B, and color "BA" where B fades
-  // into A.
-  // The stripes of "A" are narrower than the stripes of "B",
-  // but an equal-width arrangement is also shown.
-  currentPalette = CRGBPalette16( 
-        A, A, A, A, A, A, A, B, B, B, A, A, A, A, A, A
-  //    A, A, A, A, A, A, A, AB, B, B, B, B, B, B, B, BA
-  );
-}
-
-
-
 
 // ##### MY TIME FUNCTIONS #####
 int getTimeSerial () {

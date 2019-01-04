@@ -304,58 +304,116 @@ void loop() {
       //  TIMER
       //#####################
             
-      if ( ( getTimeSerial() > 1700 ) && ( getTimeSerial() < 2359 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
+      if ( ( getTimeSerial() > 1700 ) && ( getTimeSerial() < 2301 ) ) { // Run between 6pm (1800 ) and 10pm ( 2210 )
       
-      //  if ( (  minute() % 10 == 9 ) ) { // Run on even hours only
-          if ( ( getTimeSerial() > 1900 ) && ( getTimeSerial() < 1905 ) ) { 
-            snowSparkle(165, 30, 80);
-          }
+      //Default
+      //rainbow();
+      //droplets(0, 128, 0, 100, 1); // droplets( mode < 0=ring, 1=fill >, myHue, colorIncrement, speed, direction <0=out, 1=in> )
+      //snowSparkle(145, 30, 80);
 
-      //  if ( (  minute() % 10 == 8 ) ) { // Run on even hours only 
-          if ( ( getTimeSerial() > 1930 ) && ( getTimeSerial() < 1935 ) ) { 
-            droplets(1, 20,250, 0); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
-          }
-      //  if ( (  minute() % 10 == 7 ) ) { // Run on even hours only
-          if ( ( getTimeSerial() > 2000 ) && ( getTimeSerial() < 2005 ) ) { 
-            //colorWipe(38,30,1); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            //colorflash( 0, 210, 1, 60, 50);
-            theaterChaseRainbow(200);
-          }
-      //  if ( (  minute() % 10 == 6 ) ) { // Run on even hours only
-          if ( ( getTimeSerial() > 2030 ) && ( getTimeSerial() < 2035 ) ) {  
-            droplets(0, 20,50, 1); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
-          }
-      //  if ( (  minute() % 10 == 5 ) ) { // Run on even hours only
-          if ( ( getTimeSerial() > 2100 ) && ( getTimeSerial() < 2135 ) ) {  
-            //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            cylon();
-          }
-      //    if ( (  minute() % 10 == 4 ) ) { // Run on even hours only 
-            if ( ( getTimeSerial() > 2200 ) && ( getTimeSerial() < 2235 ) ) { 
-            //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            Fire2012WithPalette();
-          }
-      //   if ( (  minute() % 10 == 3 ) ) { // Run on even hours only 
-          if ( ( getTimeSerial() > 2300 ) && ( getTimeSerial() < 2305 ) ) { 
-            //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            confetti();
-          }
-      //  if ( (  minute() % 10 == 2 ) ) { // Run on even hours only 
-          if ( ( getTimeSerial() > 2330 ) && ( getTimeSerial() < 2335 ) ) { 
-            //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            meteorShower();
-          }
-      //  if ( (  minute() % 10 == 1 ) ) { // Run on even hours only
-          if ( ( getTimeSerial() > 2400 ) && ( getTimeSerial() < 2405 ) ) {  
-            //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            juggle();
-          }
-      //  if ( (  minute() % 10 == 0 ) ) { // Run on even hours only
-          if ( ( getTimeSerial() > 2430 ) && ( getTimeSerial() < 2435 ) ) { 
-            //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
-            bpm();
-          }
-          rainbow();
+      if ( ( getTimeSerial() > 1700 ) && ( getTimeSerial() < 1800 ) ) { 
+        snowSparkle(145, 60, 100);
+      }
+      if ( ( getTimeSerial() > 1801 ) && ( getTimeSerial() < 1900 ) ) { 
+        snowSparkle(0, 30, 80);
+      }
+      if ( ( getTimeSerial() > 1901 ) && ( getTimeSerial() < 2000 ) ) { 
+        snowSparkle(145, 100, 150);
+      }
+      if ( ( getTimeSerial() > 2001 ) && ( getTimeSerial() < 2100 ) ) { 
+        snowSparkle(96, 30, 80);
+      }
+      if ( ( getTimeSerial() > 2101 ) && ( getTimeSerial() < 2200 ) ) { 
+        snowSparkle(0, 80, 100);
+      }
+      if ( ( getTimeSerial() > 2201 ) && ( getTimeSerial() < 2301 ) ) { 
+        snowSparkle(145, 30, 80);
+      }
+      // //  if ( (  minute() % 10 == 9 ) ) { // Run on even hours only
+      //     if ( ( getTimeSerial() > 1900 ) && ( getTimeSerial() < 1905 ) ) { 
+      //       snowSparkle(165, 30, 80);
+      //     }
+
+      //     if ( ( getTimeSerial() > 1910 ) && ( getTimeSerial() < 1920 ) ) { 
+      //       juggle();
+      //     }
+
+      // //  if ( (  minute() % 10 == 8 ) ) { // Run on even hours only 
+      //     if ( ( getTimeSerial() > 1930 ) && ( getTimeSerial() < 1935 ) ) { 
+      //       droplets(1, 20,250, 0); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
+      //     }
+          
+      //     if ( ( getTimeSerial() > 1945 ) && ( getTimeSerial() < 1950 ) ) { 
+      //       cylon();
+      //     }
+
+      // //  if ( (  minute() % 10 == 7 ) ) { // Run on even hours only
+      //     if ( ( getTimeSerial() > 2000 ) && ( getTimeSerial() < 2005 ) ) { 
+      //       //colorWipe(38,30,1); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       //colorflash( 0, 210, 1, 60, 50);
+      //       theaterChaseRainbow(200);
+      //     }
+
+      //     if ( ( getTimeSerial() > 2010 ) && ( getTimeSerial() < 2020 ) ) { 
+      //       colorWipe(5,20,0);
+      //     }
+      
+
+      // //  if ( (  minute() % 10 == 6 ) ) { // Run on even hours only
+      //     if ( ( getTimeSerial() > 2030 ) && ( getTimeSerial() < 2035 ) ) {  
+      //       droplets(0, 20,50, 1); // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
+      //     }
+
+      // //  if ( (  minute() % 10 == 5 ) ) { // Run on even hours only
+      //     if ( ( getTimeSerial() > 2045 ) && ( getTimeSerial() < 2050 ) ) {  
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       confetti();
+      //     }
+
+      // //    if ( (  minute() % 10 == 4 ) ) { // Run on even hours only 
+      //     if ( ( getTimeSerial() > 2100 ) && ( getTimeSerial() < 2105 ) ) { 
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       meteorShower();
+      //     }
+
+      //     if ( ( getTimeSerial() > 2115 ) && ( getTimeSerial() < 2120 ) ) { 
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       bpm();
+      //     }
+
+
+      //     if ( ( getTimeSerial() > 2130 ) && ( getTimeSerial() < 2135 ) ) { 
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       Fire2012WithPalette();
+      //     }
+
+      // //   if ( (  minute() % 10 == 3 ) ) { // Run on even hours only 
+      //     if ( ( getTimeSerial() > 2140 ) && ( getTimeSerial() < 2145 ) ) { 
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       colorflash( 0, 210, 1, 60, 50);
+      //     }
+
+      // //  if ( (  minute() % 10 == 2 ) ) { // Run on even hours only 
+      //     if ( ( getTimeSerial() > 2200 ) && ( getTimeSerial() < 2210 ) ) { 
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       juggle();
+      //     }
+
+      // //  if ( (  minute() % 10 == 1 ) ) { // Run on even hours only
+      //     if ( ( getTimeSerial() > 2230 ) && ( getTimeSerial() < 2240 ) ) {  
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       colorWipe(38,30,1); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //     }
+
+      // //  if ( (  minute() % 10 == 0 ) ) { // Run on even hours only
+      //     if ( ( getTimeSerial() > 2250 ) && ( getTimeSerial() < 2300 ) ) { 
+      //       //colorWipe(5,20,0); // colorWipe( colorIncrement, speed, direction <0=out, 1=in> )
+      //       bpm();
+      //     }
+
+
+
+          
         FastLED.show();
        } else {
           FastLED.show();
@@ -426,7 +484,7 @@ void fadeall() { for(int i = 0; i < NUM_LEDS_ALL; i++) { ring6[i].nscale8(150); 
 //********************************************************************************
 // DROPLETS // droplets( mode < 0=ring, 1=fill >, colorIncrement, speed, direction <0=out, 1=in> )
 //********************************************************************************
-void droplets(int mode, int colorIncrement, int speed, int direction) 
+void droplets(int mode, int myHue, int colorIncrement, int speed, int direction) 
 {
   //Serial.println(myCnt);
   //Serial.println(myCnt % 5);
@@ -640,6 +698,9 @@ void colorWipe(int colorIncrement, int speed, int direction){
 //********************************************************************************
 void snowSparkle(int myHue, int sparkleDelay, int speedDelay) {
   //setAll(red,green,blue);
+  if(myHue > 0){
+    gHue = myHue;
+  }
   fill_solid( ring6, NUM_LEDS_ALL, CHSV(gHue,255,255));
   int Pixel = random(NUM_LEDS_ALL);
   //setPixel(Pixel,0xff,0xff,0xff);
